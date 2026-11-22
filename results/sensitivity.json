@@ -1,0 +1,11 @@
+{
+  "pooled_suv_symmetric_g_per_mile": {
+    "within": -101.58973773773772,
+    "mix": 27.222123123123133,
+    "net": -74.36761461461458
+  },
+  "printed_rounding_mix_bounds_g_per_mile": {
+    "min": 29.50849999999997,
+    "max": 30.69724999999994
+  }
+}

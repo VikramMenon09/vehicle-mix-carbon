@@ -1,0 +1,71 @@
+year,vehicle_type,production_share_pct,co2_g_per_mile
+2010,Sedan/Wagon,54.5,340
+2010,Car SUV,8.2,386
+2010,Truck SUV,20.7,452
+2010,Minivan/Van,5.0,442
+2010,Pickup,11.5,527
+2011,Sedan/Wagon,47.8,344
+2011,Car SUV,10.0,378
+2011,Truck SUV,25.5,449
+2011,Minivan/Van,4.3,424
+2011,Pickup,12.3,516
+2012,Sedan/Wagon,55.0,322
+2012,Car SUV,9.4,381
+2012,Truck SUV,20.6,445
+2012,Minivan/Van,4.9,418
+2012,Pickup,10.1,516
+2013,Sedan/Wagon,54.1,313
+2013,Car SUV,10.0,365
+2013,Truck SUV,21.8,427
+2013,Minivan/Van,3.8,422
+2013,Pickup,10.4,509
+2014,Sedan/Wagon,49.2,313
+2014,Car SUV,10.1,364
+2014,Truck SUV,23.9,412
+2014,Minivan/Van,4.3,418
+2014,Pickup,12.4,493
+2015,Sedan/Wagon,47.2,306
+2015,Car SUV,10.2,353
+2015,Truck SUV,28.1,406
+2015,Minivan/Van,3.9,408
+2015,Pickup,10.7,474
+2016,Sedan/Wagon,43.8,303
+2016,Car SUV,11.5,338
+2016,Truck SUV,29.1,400
+2016,Minivan/Van,3.9,410
+2016,Pickup,11.7,471
+2017,Sedan/Wagon,41.0,293
+2017,Car SUV,11.6,339
+2017,Truck SUV,31.7,398
+2017,Minivan/Van,3.6,399
+2017,Pickup,12.1,470
+2018,Sedan/Wagon,36.7,286
+2018,Car SUV,11.3,324
+2018,Truck SUV,35.0,384
+2018,Minivan/Van,3.1,389
+2018,Pickup,13.9,466
+2019,Sedan/Wagon,32.7,285
+2019,Car SUV,11.7,323
+2019,Truck SUV,36.5,378
+2019,Minivan/Van,3.4,396
+2019,Pickup,15.6,467
+2020,Sedan/Wagon,30.9,277
+2020,Car SUV,13.0,310
+2020,Truck SUV,38.7,374
+2020,Minivan/Van,2.9,379
+2020,Pickup,14.4,465
+2021,Sedan/Wagon,25.7,270
+2021,Car SUV,11.4,278
+2021,Truck SUV,44.7,368
+2021,Minivan/Van,2.2,322
+2021,Pickup,16.1,463
+2022,Sedan/Wagon,26.5,260
+2022,Car SUV,10.4,250
+2022,Truck SUV,43.8,364
+2022,Minivan/Van,2.9,339
+2022,Pickup,16.4,444
+2023,Sedan/Wagon,25.0,249
+2023,Car SUV,12.5,190
+2023,Truck SUV,45.3,356
+2023,Minivan/Van,2.5,339
+2023,Pickup,14.7,432
