@@ -7,6 +7,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen.canvas import Canvas
 
 from paper.figures import annual_paths, change_bars
+from paper import extensions
 from paper.layout import LEFT, LIGHT, MUTED, RIGHT, Page, block
 
 TITLE = "How vehicle mix shaped U.S. tailpipe emissions"
@@ -26,7 +27,7 @@ def source_link(url, label):
     return f'<link href="{url}" color="#006A62"><u>{label}</u></link>'
 
 
-def overview(c, annual, main):
+def overview(c, annual, main, cohort):
     p = Page(c, 1, "Research paper")
     p.para("How vehicle mix shaped<br/>U.S. tailpipe emissions", font="Times-Bold",
            size=36, leading=38, gap=10)
@@ -42,7 +43,11 @@ def overview(c, annual, main):
            f"changes in its share of production. Lower rates within types reduced the fleet average "
            f"by {abs(within):.1f} grams per mile. The changing mix added {mix:.1f} grams back, offsetting "
            f"<b>{mix / abs(within):.1%}</b> of the improvement. The net decline was {abs(net):.1f} grams per mile "
-           f"({abs(net)/base:.1%}).", gap=15)
+           f"({abs(net)/base:.1%}). Production grew enough that, over an assumed 10,000 miles per vehicle, "
+           f"the 2023 cohort would emit {float(cohort[-1]['actual_mix_megatonnes'])/float(cohort[0]['actual_mix_megatonnes'])-1:.1%} "
+           "more than the 2010 cohort. Under the same assumption, the 2023 total is "
+           f"{1-float(cohort[-1]['actual_mix_megatonnes'])/float(next(r for r in cohort if r['year']=='2013')['actual_mix_megatonnes']):.1%} "
+           "below the 2013 total.", gap=15)
     p.figure_title("Figure 1", "Tailpipe emissions per mile with actual and fixed production shares")
     annual_paths(p, annual)
     p.caption("Grams per mile by model year. Both lines use each year’s emissions rates for all five types. "
@@ -133,13 +138,13 @@ def method(c, main, rates_first, shares_first):
 
 
 def sensitivity(c, periods, extra):
-    p = Page(c, 4, "Sensitivity analysis")
+    p = Page(c, 5, "Sensitivity analysis")
     p.heading("How stable is the mix estimate?")
     p.para("The endpoint result compares two complete model years. Shorter comparisons "
            "show when the production shift mattered most. A further check adds the 13 "
            "year-to-year decompositions, allowing each year’s mix and emissions rates to "
            "set the weights for the next step.", gap=13)
-    p.figure_title("Table 2", "Sensitivity to timing and SUV classification")
+    p.figure_title("Table 3", "Sensitivity to timing and SUV classification")
     rows = []
     for start, end, method_name, label in [
         (2010, 2023, "symmetric", "2010–2023, endpoints"),
@@ -171,57 +176,52 @@ def sensitivity(c, periods, extra):
     p.para(f"Allow each share to vary by 0.05 percentage points and each type rate by 0.5 g/mi, "
            f"with true shares summing to 100% in each year. Across all compatible endpoint values, "
            f"the five-type mix term ranges from <b>{bounds['min']:.1f} to {bounds['max']:.1f} g/mi</b>. "
-           "This interval measures reporting precision only. It excludes uncertainty in EPA’s test "
+           "The main estimate scales printed shares proportionally. This check uses feasible unrounded shares. The interval excludes uncertainty in EPA’s test "
            "estimates and differences in how people drive.")
     p.finish()
 
 
-def implications(c, values):
-    p = Page(c, 5, "Economic interpretation")
-    p.heading("What is the carbon difference worth?")
-    mid = values[1]
-    gap, tonnes = float(mid["gap_g_per_mile"]), float(mid["tonnes_co2"])
-    p.para(f"Consider 10,000 miles in a vehicle drawn from 2023 production, with each type "
-           f"driven the same distance. The {gap:.1f} g/mi gap between the actual mix and the "
-           f"2010 mix amounts to {tonnes:.3f} metric tonnes of tailpipe {CO2}. Assigning a price "
-           "to each tonne translates that physical difference into a dollar value. This is a "
-           "one-vehicle mileage scenario based on Figure 1.", gap=11)
-    p.figure_title("Table 3", "Value of the additional tailpipe carbon over 10,000 miles")
-    p.table(["Assumed price per metric tonne", "Extra tonnes", "Implied value"],
-            [[f'${int(r["price_usd_per_tonne"])}', f'{float(r["tonnes_co2"]):.3f}',
-              f'${float(r["implied_value_usd"]):.2f}'] for r in values], [233, 111, 156],
-            row_height=20, header_height=23)
-    p.caption("Illustrative U.S. dollars. Dollars = (grams per mile × miles ÷ 1,000,000) × price per tonne. "
-              "The prices are scenario inputs. No market price or household payment is assumed.")
-    p.subhead("What follows for environmental economics")
-    p.para("A forecast that holds vehicle shares constant can miss a material part of the change "
-           "in emissions. For projections of new-vehicle standards or electric-vehicle adoption, "
-           "the sedan and truck SUV shares deserve explicit assumptions. The comparison holds each "
-           "type’s emissions rate fixed when reweighting, even though a different mix could also "
-           "have altered vehicle prices, design choices and the models manufacturers offered.")
-    p.para("A full welfare calculation would also require the value buyers place on vehicle "
-           "attributes, the miles different vehicles travel, and emissions from fuel supply, "
-           "electricity generation and manufacturing. The dollar amounts above price only the "
-           "tailpipe difference for a common distance. Over the study period, the shift in the new-vehicle "
-           "mix absorbed nearly three-tenths of the gains achieved within types.", gap=10)
-    p.subhead("References and replication")
-    epa = source_link("https://www.epa.gov/automotive-trends/download-2024-automotive-trends-report", "EPA report")
-    kit = source_link("https://doi.org/10.1080/01621459.1955.10501299", "Article")
-    kn = source_link("https://doi.org/10.1257/aer.101.7.3368", "Article")
+def references(c):
+    p = Page(c, 10, "Appendix B · Sources and replication")
+    p.heading("Sources and replication")
+    p.subhead("Data and literature")
     refs = [
-        f"[1] U.S. Environmental Protection Agency (2024). <i>The 2024 EPA Automotive Trends Report.</i> "
-        f"EPA-420-R-24-022. Tables 3.1–3.2, Section 3 and Appendices D–E. {epa}.",
-        f"[2] Kitagawa, E. M. (1955). Components of a Difference Between Two Rates. "
-        f"<i>Journal of the American Statistical Association</i> 50(272), 1168–1194. {kit}.",
-        f"[3] Knittel, C. R. (2011). Automobiles on Steroids: Product Attribute Trade-Offs and "
-        f"Technological Progress in the Automobile Sector. <i>American Economic Review</i> 101(7), 3368–3399. {kn}.",
+        ("[1] U.S. Environmental Protection Agency. 2024. <i>The 2024 EPA Automotive Trends "
+         "Report: Greenhouse Gas Emissions, Fuel Economy, and Technology since 1975.</i> "
+         "EPA-420-R-24-022. Table 2.1 supplies production totals to the nearest thousand. "
+         "Tables 3.1–3.4 supply national and manufacturer rates and shares. Section 5, p. 93, "
+         "supplies the scenario mileage. Appendices D and E document scope and emissions methods.",
+         "https://www.epa.gov/automotive-trends/download-2024-automotive-trends-report", "EPA report"),
+        ("[2] Kitagawa, E. M. 1955. Components of a Difference Between Two Rates. "
+         "<i>Journal of the American Statistical Association</i> 50(272), 1168–1194.",
+         "https://doi.org/10.1080/01621459.1955.10501299", "Article"),
+        ("[3] Knittel, C. R. 2011. Automobiles on Steroids: Product Attribute Trade-Offs and "
+         "Technological Progress in the Automobile Sector. <i>American Economic Review</i> 101(7), 3368–3399.",
+         "https://doi.org/10.1257/aer.101.7.3368", "Article"),
+        ("[4] Shorrocks, A. F. 2013. Decomposition Procedures for Distributional Analysis: "
+         "A Unified Framework Based on the Shapley Value. <i>Journal of Economic Inequality</i> 11, 99–126.",
+         "https://doi.org/10.1007/s10888-011-9214-z", "Article"),
+        ("[5] Rennert, K., F. Errickson, B. C. Prest, et al. 2022. Comprehensive Evidence Implies a "
+         "Higher Social Cost of CO<sub>2</sub>. <i>Nature</i> 610, 687–692.",
+         "https://doi.org/10.1038/s41586-022-05224-9", "Article"),
     ]
-    for ref in refs:
-        p.para(ref, size=10.1, leading=12.4, gap=4)
-    repo_link = source_link("https://github.com/VikramMenon09/vehicle-mix-carbon", "Replication repository")
-    p.para(f"{repo_link}. The archive includes the EPA report, source tables, analysis code and tests. "
-           "The analysis and manuscript were developed with AI assistance.",
-           font="Helvetica", size=8.6, leading=11.0, color=MUTED, gap=0)
+    for citation, url, label in refs:
+        p.para(f"{citation} {source_link(url, label)}.", size=11.5, leading=15, gap=7)
+    p.subhead("Reconstructing the study")
+    p.para("The repository contains the full EPA release, checksum, machine-readable input tables, "
+           "code, figures and result tables. The extraction distinguishes missing manufacturer cells "
+           "from measured zero emissions and shares rounded to zero. The build checks each national "
+           "average and each manufacturer’s reconstructed rate against the separately tabulated "
+           "EPA benchmark.")
+    p.para("Independent checks compare the extraction against the original tables and recompute "
+           "the headline from exact fractions. A separate implementation verifies the three-factor "
+           "decomposition by expanding the products and dividing each interaction among its factors. "
+           "The PDF and tables can be rebuilt from the archived report with the following command.")
+    p.para("uv run --locked python reproduce.py --from-pdf", font="Courier", size=11, leading=16,
+           indent=10, gap=10)
+    repo = source_link("https://github.com/VikramMenon09/vehicle-mix-carbon", "Code, data and replication instructions")
+    p.para(f"{repo}. The analysis and manuscript were developed with AI assistance.",
+           font="Helvetica", size=9.5, leading=13, color=MUTED)
     p.finish()
 
 
@@ -245,10 +245,19 @@ def render(root):
     c.setDateFormatter(lambda *_: "D:20261121120000Z")
     c.setSubject("The contribution of vehicle production mix to US new-vehicle tailpipe CO2, 2010–2023")
     main = periods[2010, 2023, "symmetric"]
-    overview(c, annual, main)
+    cohort = read_csv(results / "cohorts.csv")
+    overview(c, annual, main, cohort)
     data_and_types(c, raw, annual, types)
     method(c, main, periods[2010, 2023, "rates_first"], periods[2010, 2023, "shares_first"])
+    extensions.type_attribution(c, types, annual)
     sensitivity(c, periods, extra)
-    implications(c, values)
+    extensions.firms(c, read_csv(results / "manufacturer_comparisons.csv"),
+                     read_csv(results / "manufacturer_pairs.csv"),
+                     read_csv(results / "manufacturer_rounded_zero_sensitivity.csv"))
+    extensions.cohorts(c, cohort, read_csv(results / "cohort_decomposition.csv"))
+    extensions.economics(c, read_csv(results / "lifetime_mileage.csv"),
+                         read_csv(results / "carbon_benchmark.csv"), values)
+    extensions.broad_firms(c, read_csv(results / "manufacturer_two_types.csv"))
+    references(c)
     c.save()
     return output

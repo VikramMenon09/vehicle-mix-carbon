@@ -53,3 +53,44 @@ def change_bars(page, within, mix, net):
              "Helvetica-Bold", 9.4, color, "left" if value > 0 else "right")
     text(c, x(0), top + 104, "0", size=8.2, color=MUTED, align="center")
     page.y = top + 113
+
+
+def cohort_indices(page, rows):
+    """Compare quantities with different physical units on a 2010=100 scale."""
+    c, top = page.c, page.y
+    x0, x1 = LEFT + 32, RIGHT - 115
+    graph_height = 140
+    def xy(year, index):
+        return (x0 + (year - 2010) / 13 * (x1 - x0),
+                top + (160 - index) / 85 * graph_height)
+    for tick in (80, 100, 120, 140, 160):
+        _, yy = xy(2010, tick)
+        line(c, x0, yy, x1, yy, MUTED if tick == 100 else GRID, 0.6)
+        text(c, x0 - 6, yy + 3, tick, size=8.8, color=MUTED, align="right")
+    for year in (2010, 2013, 2016, 2019, 2023):
+        xx, yy = xy(year, 75)
+        text(c, xx, yy + 13, year, size=8.8, color=MUTED, align="center")
+    for key, label, color, dash in (
+        ("vehicles", "Production", OCHRE, (4, 2)),
+        ("actual_mix_megatonnes", "Cohort total", INK, None),
+        ("rate_g_per_mile", "Per-mile rate", GREEN, (2, 2)),
+    ):
+        base = float(rows[0][key])
+        points = [xy(int(r["year"]), 100 * float(r[key]) / base) for r in rows]
+        path = c.beginPath()
+        path.moveTo(points[0][0], H - points[0][1])
+        for px, py in points[1:]:
+            path.lineTo(px, H - py)
+        c.saveState()
+        c.setStrokeColor(color)
+        c.setLineWidth(1.8)
+        if dash:
+            c.setDash(dash)
+        c.drawPath(path)
+        c.restoreState()
+        px, py = points[-1]
+        c.setFillColor(color)
+        c.circle(px, H - py, 2.2, fill=1, stroke=0)
+        text(c, px + 7, py + 3, f"{label}   {100*float(rows[-1][key])/base:.1f}",
+             "Helvetica-Bold", 9, color)
+    page.y = top + graph_height + 24

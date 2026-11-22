@@ -1,4 +1,4 @@
-"""Rebuild the two analysis CSVs from the archived EPA report using Poppler."""
+"""Rebuild the national analysis CSVs from the archived EPA report using Poppler."""
 
 import argparse
 import csv
@@ -36,15 +36,20 @@ def table_rows(page, title, column_count):
     return rows
 
 
-def extract(pdf):
+def read_pages(pdf, first, last):
+    """Read physical pages from the pinned archive and keep their table layout."""
     if hashlib.sha256(pdf.read_bytes()).hexdigest() != SHA256:
         raise ValueError(f"Source PDF checksum mismatch. Expected SHA-256 {SHA256}")
-    # Printed pages 42 and 43 are file pages 51 and 52.
     text = subprocess.check_output(
-        ["pdftotext", "-layout", "-enc", "UTF-8", "-f", "51", "-l", "52", str(pdf), "-"],
+        ["pdftotext", "-layout", "-enc", "UTF-8", "-f", str(first), "-l", str(last), str(pdf), "-"],
         encoding="utf-8",
     )
-    fleet_page, type_page = (p for p in text.split("\f") if p.strip())
+    return [page for page in text.split("\f") if page.strip()]
+
+
+def extract(pdf):
+    # Printed pages 42 and 43 are file pages 51 and 52.
+    fleet_page, type_page = read_pages(pdf, 51, 52)
     fleet_table = table_rows(fleet_page, "Table 3.1.", 9)
     type_table = table_rows(type_page, "Table 3.2.", 16)
 
@@ -59,6 +64,30 @@ def extract(pdf):
                 raise ValueError(f"Unexpected column arrangement for {year} {vehicle_type}")
             type_rows.append((year, vehicle_type, share[:-1], int(co2)))
     return fleet_rows, type_rows
+
+
+def extract_production(pdf, fleet):
+    """Read the second block of Table 2.1 and match its rates to Table 3.1."""
+    page = subprocess.check_output(
+        ["pdftotext", "-layout", "-f", "23", "-l", "23", str(pdf), "-"],
+        encoding="utf-8",
+    )
+    if not page.lstrip().startswith("Table 2.1. Production"):
+        raise ValueError("Unexpected title for the production table on PDF page 23")
+    benchmark = dict(fleet)
+    production = {}
+    for line in page.splitlines():
+        fields = line.split()
+        if len(fields) != 8 or not fields[4].isdigit():
+            continue
+        year = int(fields[4])
+        if year in YEARS:
+            if year in production or int(fields[6]) != benchmark[year]:
+                raise ValueError(f"Invalid Table 2.1 fleet benchmark in {year}")
+            production[year] = int(fields[5].replace(",", "")) * 1000
+    if set(production) != set(YEARS) or min(production.values()) <= 0:
+        raise ValueError("Incomplete or invalid production series in Table 2.1")
+    return sorted(production.items())
 
 
 def write_csv(path, header, rows):
@@ -78,7 +107,9 @@ def main():
     args = parser.parse_args()
     try:
         fleet, types = extract(args.pdf)
+        production = extract_production(args.pdf, fleet)
         args.output_dir.mkdir(parents=True, exist_ok=True)
+        write_csv(args.output_dir / "production.csv", ("year", "vehicles"), production)
         write_csv(args.output_dir / "fleet.csv", ("year", "co2_g_per_mile"), fleet)
         write_csv(
             args.output_dir / "vehicle_types.csv",

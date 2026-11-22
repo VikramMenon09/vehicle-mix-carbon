@@ -1,0 +1,4 @@
+manufacturer,observed_g_per_mile,standardized_g_per_mile,standardized_minus_observed_g_per_mile,epa_g_per_mile,observed_rank,standardized_rank
+Ford,373.987000000,366.927000000,-7.060000000,374.000000000,3,3
+Honda,313.960000000,327.960000000,14.000000000,314.000000000,1,2
+Toyota,322.015015015,319.207000000,-2.808015015,322.000000000,2,1

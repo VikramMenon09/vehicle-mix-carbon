@@ -1,0 +1,81 @@
+manufacturer,vehicle_type,production_share_pct,co2_g_per_mile
+BMW,Sedan/Wagon,46.6,268
+BMW,Car SUV,4.7,342
+BMW,Truck SUV,48.7,338
+BMW,Minivan/Van,,
+BMW,Pickup,,
+Ford,Sedan/Wagon,1.3,408
+Ford,Car SUV,8.4,135
+Ford,Truck SUV,44.7,401
+Ford,Minivan/Van,1.6,351
+Ford,Pickup,44.0,392
+GM,Sedan/Wagon,14.5,252
+GM,Car SUV,11.6,301
+GM,Truck SUV,48.6,422
+GM,Minivan/Van,,
+GM,Pickup,25.3,474
+Honda,Sedan/Wagon,42.5,267
+Honda,Car SUV,7.3,269
+Honda,Truck SUV,35.3,344
+Honda,Minivan/Van,8.0,377
+Honda,Pickup,6.9,424
+Hyundai,Sedan/Wagon,33.9,246
+Hyundai,Car SUV,27.1,262
+Hyundai,Truck SUV,39.1,352
+Hyundai,Minivan/Van,,
+Hyundai,Pickup,,
+Kia,Sedan/Wagon,45.3,242
+Kia,Car SUV,9.9,300
+Kia,Truck SUV,41.9,330
+Kia,Minivan/Van,2.9,386
+Kia,Pickup,,
+Mazda,Sedan/Wagon,11.3,285
+Mazda,Car SUV,,
+Mazda,Truck SUV,88.7,327
+Mazda,Minivan/Van,,
+Mazda,Pickup,,
+Mercedes,Sedan/Wagon,34.6,297
+Mercedes,Car SUV,16.2,129
+Mercedes,Truck SUV,40.0,357
+Mercedes,Minivan/Van,9.2,411
+Mercedes,Pickup,,
+Nissan,Sedan/Wagon,38.5,257
+Nissan,Car SUV,16.3,268
+Nissan,Truck SUV,36.5,339
+Nissan,Minivan/Van,,
+Nissan,Pickup,8.7,447
+Stellantis,Sedan/Wagon,15.2,425
+Stellantis,Car SUV,0.0,329
+Stellantis,Truck SUV,50.8,382
+Stellantis,Minivan/Van,10.2,334
+Stellantis,Pickup,23.8,458
+Subaru,Sedan/Wagon,13.5,321
+Subaru,Car SUV,,
+Subaru,Truck SUV,86.5,310
+Subaru,Minivan/Van,,
+Subaru,Pickup,,
+Tesla,Sedan/Wagon,36.1,0
+Tesla,Car SUV,55.1,0
+Tesla,Truck SUV,8.8,0
+Tesla,Minivan/Van,,
+Tesla,Pickup,,
+Toyota,Sedan/Wagon,29.4,258
+Toyota,Car SUV,8.6,284
+Toyota,Truck SUV,39.7,329
+Toyota,Minivan/Van,3.1,249
+Toyota,Pickup,19.1,435
+VW,Sedan/Wagon,25.3,310
+VW,Car SUV,13.8,203
+VW,Truck SUV,60.9,345
+VW,Minivan/Van,,
+VW,Pickup,,
+Other,Sedan/Wagon,11.3,182
+Other,Car SUV,8.7,88
+Other,Truck SUV,76.1,323
+Other,Minivan/Van,0.5,331
+Other,Pickup,3.5,0
+All Manufacturers,Sedan/Wagon,25.0,249
+All Manufacturers,Car SUV,12.5,190
+All Manufacturers,Truck SUV,45.3,356
+All Manufacturers,Minivan/Van,2.5,339
+All Manufacturers,Pickup,14.7,432

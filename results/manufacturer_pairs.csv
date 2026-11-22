@@ -1,0 +1,4 @@
+manufacturer_a,manufacturer_b,observed_gap_g_per_mile,standardized_gap_g_per_mile,gap_change_g_per_mile,rank_reversal
+Ford,Honda,60.027000000,38.967000000,-21.060000000,0
+Ford,Toyota,51.971984985,47.720000000,-4.251984985,0
+Honda,Toyota,-8.055015015,8.753000000,16.808015015,1

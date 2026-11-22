@@ -1,0 +1,15 @@
+manufacturer,positive_share_types,missing_rate_types,rounded_zero_share_types_with_rates,national_mix_covered_by_positive_share_types_pct,eligible_five_types
+BMW,3,Minivan/Van|Pickup,,82.800000000,0
+Ford,5,,,100.000000000,1
+GM,4,Minivan/Van,,97.500000000,0
+Honda,5,,,100.000000000,1
+Hyundai,3,Minivan/Van|Pickup,,82.800000000,0
+Kia,4,Pickup,,85.300000000,0
+Mazda,2,Car SUV|Minivan/Van|Pickup,,70.300000000,0
+Mercedes,4,Pickup,,85.300000000,0
+Nissan,4,Minivan/Van,,97.500000000,0
+Stellantis,4,,Car SUV,87.500000000,0
+Subaru,2,Car SUV|Minivan/Van|Pickup,,70.300000000,0
+Tesla,3,Minivan/Van|Pickup,,82.800000000,0
+Toyota,5,,,100.000000000,1
+VW,3,Minivan/Van|Pickup,,82.800000000,0

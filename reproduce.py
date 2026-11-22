@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from scripts import analyze, sensitivity
+from scripts import analyze, exposure, manufacturer_analysis, sensitivity
 
 
 def main():
@@ -17,9 +17,12 @@ def main():
     args = parser.parse_args()
     root = Path(__file__).resolve().parent
     if args.from_pdf:
-        subprocess.run([sys.executable, str(root / "scripts/extract_data.py")], check=True)
+        for script in ("extract_data.py", "extract_manufacturers.py"):
+            subprocess.run([sys.executable, str(root / "scripts" / script)], check=True)
     analyze.run(root / "data", root / "results")
     sensitivity.run(root / "data", root / "results")
+    exposure.run(root / "data", root / "results")
+    manufacturer_analysis.run(root / "data", root / "results")
     if not args.analysis_only:
         from paper.render import render
         output = render(root)
